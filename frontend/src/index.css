@@ -1,30 +1,24 @@
-/* src/index.css */
+/* Import Google Fonts FIRST */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+
+/* Then Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
-
 /* Theme Variables */
 :root[data-theme="light"] {
-  /* Primary Colors */
   --primary: #FF9933;
   --primary-hover: #E58A2E;
   --secondary: #006994;
   --secondary-hover: #005577;
-  
-  /* Accent */
   --accent: #F4A261;
   --accent-light: #F7EBE8;
-  
-  /* Neutrals */
   --bg-primary: #FFFFFF;
   --bg-secondary: #F8F9FA;
   --bg-card: #FFFFFF;
   --text-primary: #2D3748;
   --text-secondary: #718096;
-  
-  /* Borders & Shadows */
   --border: #E2E8F0;
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -32,31 +26,23 @@
 }
 
 :root[data-theme="dark"] {
-  /* Primary Colors */
   --primary: #1B4332;
   --primary-hover: #2D5F3F;
   --secondary: #3A506B;
   --secondary-hover: #4A6080;
-  
-  /* Accent */
   --accent: #FF6F59;
   --accent-light: #2A3F31;
-  
-  /* Neutrals */
   --bg-primary: #1A202C;
   --bg-secondary: #2D3748;
   --bg-card: #2D3748;
   --text-primary: #F7FAFC;
   --text-secondary: #A0AEC0;
-  
-  /* Borders & Shadows */
   --border: #4A5568;
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
 }
 
-/* Global Styles */
 * {
   margin: 0;
   padding: 0;
@@ -77,7 +63,6 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
 }
 
-/* App Container */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -86,12 +71,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .main-content {
   flex: 1;
-  padding-top: 70px; /* Account for fixed navbar */
+  padding-top: 70px;
 }
 
-/* Component Styles */
 @layer components {
-  /* Buttons */
   .btn {
     @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer inline-flex items-center justify-center gap-2;
   }
@@ -127,7 +110,6 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--accent-light);
   }
 
-  /* Cards */
   .card {
     background-color: var(--bg-card);
     border-radius: 12px;
@@ -142,7 +124,6 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(-4px);
   }
 
-  /* Inputs */
   .input {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -160,7 +141,6 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.1);
   }
 
-  /* Badges */
   .badge {
     @apply px-3 py-1 rounded-full text-sm font-medium inline-block;
   }
@@ -175,14 +155,12 @@ h1, h2, h3, h4, h5, h6 {
     color: #065F46;
   }
 
-  /* Loading Spinner */
   .spinner {
     @apply animate-spin rounded-full border-4 border-gray-200;
     border-top-color: var(--primary);
   }
 }
 
-/* Utility Classes */
 @layer utilities {
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
@@ -202,7 +180,6 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -225,15 +202,6 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out forwards;
 }
@@ -242,7 +210,6 @@ h1, h2, h3, h4, h5, h6 {
   animation: slideInRight 0.6s ease-out forwards;
 }
 
-/* Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -260,7 +227,6 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--primary-hover);
 }
 
-/* Responsive Typography */
 @media (max-width: 768px) {
   html {
     font-size: 14px;

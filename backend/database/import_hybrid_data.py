@@ -11,7 +11,7 @@ import oracledb
 # ================================
 # ORACLE CLIENT (THICK MODE) - 11g
 # ================================
-INSTANT_CLIENT_DIR = r"C:\Users\sonal\OneDrive\Desktop\PBL_5TH SEM\instantclient_19_28"
+INSTANT_CLIENT_DIR = r"C:/Program Files/Oracle/instantclient_19_29"
 oracledb.init_oracle_client(lib_dir=INSTANT_CLIENT_DIR)
 
 # ================================
@@ -20,13 +20,13 @@ oracledb.init_oracle_client(lib_dir=INSTANT_CLIENT_DIR)
 DB_CONFIG = {
     "user": "system",
     "password": "oracle",
-    "dsn": "localhost:1522/xe",   # your listener shows 1522 and service 'xe'
+    "dsn": "localhost:1521/xe",   # your listener shows 1522 and service 'xe'
 }
 
 # ================================
 # FILE PATH (no \D warnings)
 # ================================
-CSV_PATH = Path(r"C:\Users\sonal\OneDrive\Desktop\PBL_5TH SEM\DBMS\restaurant_reviews\zomato_restaurants.csv")
+CSV_PATH = Path(r"C:\Users\manve\OneDrive\Desktop\restaurant_review\zomato_restaurants.csv")
 
 # ================================
 # HELPERS

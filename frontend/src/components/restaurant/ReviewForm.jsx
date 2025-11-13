@@ -1,3 +1,7 @@
+import { useState } from 'react';
+import { reviewAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+
 export function ReviewForm({ restaurantId, onSuccess }) {
   const [reviewText, setReviewText] = useState('');
   const [submitting, setSubmitting] = useState(false);

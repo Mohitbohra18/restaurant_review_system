@@ -1,0 +1,251 @@
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { restaurantAPI, reviewAPI } from '../services/api';
+import { RatingForm } from '../components/restaurant/RatingForm';
+import { ReviewForm } from '../components/restaurant/ReviewForm';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+
+export default function RestaurantDetail() {
+  const { id } = useParams();
+  const [restaurant, setRestaurant] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    fetchRestaurantDetails();
+    fetchReviews();
+  }, [id]);
+
+  const fetchRestaurantDetails = async () => {
+    try {
+      const response = await restaurantAPI.getById(id);
+      setRestaurant(response.data);
+    } catch (error) {
+      console.error('Error fetching restaurant:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await reviewAPI.getByRestaurant(id);
+      setReviews(response.data);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <LoadingSpinner size="large" />
+      </div>
+    );
+  }
+
+  if (!restaurant) {
+    return (
+      <div className="container-custom py-12 text-center">
+        <h2 className="text-2xl font-bold mb-4">Restaurant not found</h2>
+        <Link to="/discover" className="btn btn-primary">
+          Back to Discover
+        </Link>
+      </div>
+    );
+  }
+
+  const getRatingColor = (rating) => {
+    if (rating >= 4.5) return 'bg-green-500';
+    if (rating >= 4.0) return 'bg-green-400';
+    if (rating >= 3.5) return 'bg-yellow-500';
+    return 'bg-orange-500';
+  };
+
+  return (
+    <div className="restaurant-detail py-8 px-4">
+      <div className="container-custom">
+        {/* Breadcrumb */}
+        <div className="mb-6 flex items-center gap-2 text-sm opacity-70">
+          <Link to="/" className="hover:text-orange-500">Home</Link>
+          <span>→</span>
+          <Link to="/discover" className="hover:text-orange-500">Discover</Link>
+          <span>→</span>
+          <span>{restaurant.name}</span>
+        </div>
+
+        {/* Header */}
+        <div className="card mb-8">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="w-full md:w-48 h-48 rounded-lg bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center text-7xl flex-shrink-0">
+              🍽️
+            </div>
+
+            <div className="flex-1">
+              <h1 className="text-4xl font-bold mb-4">{restaurant.name}</h1>
+              
+              <div className="flex flex-wrap gap-4 mb-4">
+                <div className={`${getRatingColor(restaurant.avg_rating)} text-white px-4 py-2 rounded-lg font-bold text-lg`}>
+                  ⭐ {restaurant.avg_rating?.toFixed(1) || 'N/A'}
+                </div>
+                <div className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                  📍 {restaurant.city}
+                </div>
+                {restaurant.dining_type && (
+                  <div className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    {restaurant.dining_type}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-wrap gap-2 mb-4">
+                {restaurant.cuisines?.map((cuisine, idx) => (
+                  <span key={idx} className="badge badge-primary">
+                    {cuisine}
+                  </span>
+                ))}
+              </div>
+
+              <div className="text-lg opacity-80 mb-4">
+                <p>💰 Price Range: {'₹'.repeat(Math.min(4, Math.floor((restaurant.price_range || 500) / 500) + 1))}</p>
+                <p>👥 {restaurant.votes} votes</p>
+              </div>
+
+              {restaurant.address && (
+                <p className="opacity-70">
+                  📍 {restaurant.address}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="mb-8">
+          <div className="flex gap-4 border-b" style={{ borderColor: 'var(--border)' }}>
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`pb-4 px-6 font-medium transition-colors ${
+                activeTab === 'overview'
+                  ? 'border-b-2 border-orange-500 text-orange-500'
+                  : 'opacity-70 hover:opacity-100'
+              }`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('reviews')}
+              className={`pb-4 px-6 font-medium transition-colors ${
+                activeTab === 'reviews'
+                  ? 'border-b-2 border-orange-500 text-orange-500'
+                  : 'opacity-70 hover:opacity-100'
+              }`}
+            >
+              Reviews ({reviews.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('rate')}
+              className={`pb-4 px-6 font-medium transition-colors ${
+                activeTab === 'rate'
+                  ? 'border-b-2 border-orange-500 text-orange-500'
+                  : 'opacity-70 hover:opacity-100'
+              }`}
+            >
+              Rate & Review
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'overview' && (
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="card">
+              <h3 className="text-2xl font-bold mb-4">About</h3>
+              <p className="opacity-80 leading-relaxed">
+                {restaurant.name} is a popular dining destination in {restaurant.city}, 
+                known for its exceptional {restaurant.cuisines?.[0]} cuisine. 
+                With an average rating of {restaurant.avg_rating?.toFixed(1)}, 
+                it has become a favorite among food lovers.
+              </p>
+            </div>
+
+            <div className="card">
+              <h3 className="text-2xl font-bold mb-4">Quick Info</h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🍽️</span>
+                  <div>
+                    <p className="font-medium">Cuisines</p>
+                    <p className="opacity-70">{restaurant.cuisines?.join(', ')}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">💰</span>
+                  <div>
+                    <p className="font-medium">Average Cost</p>
+                    <p className="opacity-70">₹{restaurant.price_range || 500} for two</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">📍</span>
+                  <div>
+                    <p className="font-medium">Location</p>
+                    <p className="opacity-70">{restaurant.city}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'reviews' && (
+          <div>
+            {reviews.length > 0 ? (
+              <div className="space-y-4">
+                {reviews.map((review) => (
+                  <div key={review.review_id} className="card">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-pink-600 flex items-center justify-center text-white font-bold text-lg">
+                        {review.username?.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold">{review.username}</h4>
+                        <p className="text-sm opacity-70 mb-2">
+                          {new Date(review.review_date).toLocaleDateString('en-IN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                        <p className="leading-relaxed">{review.review_text}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="card text-center py-12">
+                <div className="text-5xl mb-4">💬</div>
+                <p className="text-xl opacity-70">No reviews yet. Be the first to review!</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'rate' && (
+          <div className="max-w-2xl mx-auto">
+            <RatingForm 
+              restaurantId={id} 
+              onSuccess={fetchRestaurantDetails}
+            />
+            <ReviewForm 
+              restaurantId={id}
+              onSuccess={fetchReviews}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
